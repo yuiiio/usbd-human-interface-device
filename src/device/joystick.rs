@@ -13,8 +13,19 @@ pub const JOYSTICK_DESCRIPTOR: &[u8] = &[
     0xa1, 0x01, // Collection (Application)             161, 1
     0x09, 0x01, //   Usage Page (Pointer)               9,   1
     0xa1, 0x00, //   Collection (Physical)              161, 0
-    0x09, 0x30, //     Usage (X)                        9,   48
-    0x09, 0x31, //     Usage (Y)                        9,   49
+    0x09, 0x30, //     Usage (LX)                        9,   48
+    0x09, 0x31, //     Usage (LY)                        9,   49
+    0x09, 0x33, //     Usage (RX)                        9,   51
+    0x09, 0x34, //     Usage (RY)                        9,   52
+    0x15, 0x00, //     Logical Minimum (0)              21,  0
+    0x25, 0xff, //     Logical Maximum (255)            37,  255
+    0x75, 0x08, //     Report Size (8)                  117, 8
+    0x95, 0x04, //     Report count (4)                 149, 4,
+    0x81, 0x02, //     Input (Data, Variable, Absolute) 129, 2,
+    0xc0,       //   End Collection                     192,
+    0xa1, 0x00, //   Collection (Physical)              161, 0
+    0x09, 0x32, //     Usage (LZ)                        9,   50
+    0x09, 0x35, //     Usage (RZ)                        9,   53
     0x15, 0x00, //     Logical Minimum (0)              21,  0
     0x25, 0xff, //     Logical Maximum (255)            37,  255
     0x75, 0x08, //     Report Size (8)                  117, 8
@@ -29,18 +40,38 @@ pub const JOYSTICK_DESCRIPTOR: &[u8] = &[
     0x75, 0x01, //   Report Size (1)                    117, 1,
     0x95, 0x08, //   Report Count (8)                   149, 8
     0x81, 0x02, //   Input (Data, Variable, Absolute)   129, 2,
+    
+	0x05, 0x01,							/*   USAGE_PAGE (Generic Desktop) */
+	0x09, 0x39,							/*   USAGE (Hat switch) */
+	0x09, 0x39,							/*   USAGE (Hat switch) */
+	0x15, 0x01,							/*   LOGICAL_MINIMUM (1) */
+	0x25, 0x08,							/*   LOGICAL_MAXIMUM (8) */
+	0x95, 0x02,							/*   REPORT_COUNT (2) */
+	0x75, 0x04,							/*   REPORT_SIZE (4) */
+	0x81, 0x02,							/*   INPUT (Data,Var,Abs) */
+
     0xc0,       // End Collection                       192
 ];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Default, PackedStruct)]
-#[packed_struct(endian = "lsb", size_bytes = "3")]
+#[packed_struct(endian = "lsb", size_bytes = "8")]
 pub struct JoystickReport {
     #[packed_field]
-    pub x: u8,
+    pub lx: u8,
     #[packed_field]
-    pub y: u8,
+    pub ly: u8,
+    #[packed_field]
+    pub rx: u8,
+    #[packed_field]
+    pub ry: u8,
+    #[packed_field]
+    pub lz: u8,
+    #[packed_field]
+    pub rz: u8,
     #[packed_field]
     pub buttons: u8,
+    #[packed_field]
+    pub hat_switch: u8,
 }
 
 pub struct Joystick<'a, B: UsbBus> {
