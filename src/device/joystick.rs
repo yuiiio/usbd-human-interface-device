@@ -138,6 +138,9 @@ impl<'a> Default for JoystickConfig<'a> {
 impl<'a> JoystickConfig<'a> {
     #[must_use]
     pub fn new(interface: InterfaceConfig<'a, InBytes8, OutNone, ReportSingle>) -> Self {
+        // can change over 8 bytes in this InterfaceConfig ?
+        // and if report size over 8 bytes then may should change max_packet_size_0 to 16, 32,,, at
+        // UsbDeviceBuilder::new().build();
         Self { interface }
     }
 }
